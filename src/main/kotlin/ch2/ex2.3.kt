@@ -8,7 +8,7 @@ class Exercise3 : WordSpec({
         { a: A  -> { b: B -> f(a, b) } }
 
     "curry" should {
-        """!break down a function that takes multiple arguments into
+        """break down a function that takes multiple arguments into
             a series of functions that each take only oneargument""" {
 
             val f: (Int) -> (Int) -> String =

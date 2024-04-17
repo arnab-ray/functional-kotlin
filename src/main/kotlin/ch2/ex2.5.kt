@@ -8,7 +8,7 @@ class Exercise5 : WordSpec({
         { a: A -> f(g(a)) }
 
     "compose" should {
-        "!apply function composition over two functions" {
+        "apply function composition over two functions" {
             val fahrenheit2celsius: (Double) -> String =
                 compose<Double, Double, String>(
                     { b -> "$b degrees celsius" },
