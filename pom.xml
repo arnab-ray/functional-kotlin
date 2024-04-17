@@ -53,7 +53,7 @@
         <dependency>
             <groupId>io.kotlintest</groupId>
             <artifactId>kotlintest-runner-junit5</artifactId>
-            <version>3.4.2</version>
+            <version>3.4.0</version>
         </dependency>
         <dependency>
             <groupId>io.github.microutils</groupId>
