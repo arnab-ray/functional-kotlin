@@ -7,65 +7,65 @@ import ch5.Stream.Companion.empty
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 
-class Exercise13 : WordSpec({
+fun <A, B> Stream<A>.map(f: (A) -> B): Stream<B> =
+    unfold(this) { a ->
+        when (a) {
+            is Empty -> None
+            is Cons -> Some(f(a.head()) to a.tail())
+        }
+    }
 
-    fun <A, B> Stream<A>.map(f: (A) -> B): Stream<B> =
-        unfold(this) { a ->
-            when (a) {
+fun <A> Stream<A>.take2(n: Int): Stream<A> =
+    unfold(this) { a ->
+        when (a) {
+            is Empty -> None
+            is Cons -> if (n > 0) Some(a.head() to a.tail().take(n - 1)) else None
+        }
+    }
+
+fun <A> Stream<A>.takeWhile(p: (A) -> Boolean): Stream<A> =
+    unfold(this) { a ->
+        when (a) {
+            is Empty -> None
+            is Cons -> if (p(a.head())) Some(a.head() to a.tail().takeWhile(p)) else None
+        }
+    }
+
+fun <A, B, C> Stream<A>.zipWith(
+    that: Stream<B>,
+    f: (A, B) -> C
+): Stream<C> =
+    unfold(this to that) { (a, b) ->
+        when (a) {
+            is Empty -> None
+            is Cons -> when (b) {
                 is Empty -> None
-                is Cons -> Some(f(a.head()) to a.tail())
+                is Cons -> Some(f(a.head(), b.head()) to (a.tail() to b.tail()))
             }
         }
+    }
 
-    fun <A> Stream<A>.take(n: Int): Stream<A> =
-        unfold(this) { a ->
-            when (a) {
-                is Empty -> None
-                is Cons -> if (n > 0) Some(a.head() to a.tail().take(n - 1)) else None
-            }
-        }
-
-    fun <A> Stream<A>.takeWhile(p: (A) -> Boolean): Stream<A> =
-        unfold(this) { a ->
-            when (a) {
-                is Empty -> None
-                is Cons -> if (p(a.head())) Some(a.head() to a.tail().takeWhile(p)) else None
-            }
-        }
-
-    fun <A, B, C> Stream<A>.zipWith(
-        that: Stream<B>,
-        f: (A, B) -> C
-    ): Stream<C> =
-        unfold(this to that) { (a, b) ->
-            when (a) {
-                is Empty -> None
-                is Cons -> when (b) {
+fun <A, B> Stream<A>.zipAll(
+    that: Stream<B>
+): Stream<Pair<Option<A>, Option<B>>> =
+    unfold(this to that) { (a, b) ->
+        when (a) {
+            is Empty -> {
+                when (b) {
                     is Empty -> None
-                    is Cons -> Some(f(a.head(), b.head()) to (a.tail() to b.tail()))
+                    is Cons -> Some((None to Some(b.head())) to (empty<A>() to b.tail()))
+                }
+            }
+            is Cons -> {
+                when (b) {
+                    is Empty -> Some((Some(a.head()) to None) to (a.tail() to empty()))
+                    is Cons -> Some((Some(a.head()) to Some(b.head())) to (a.tail() to b.tail()))
                 }
             }
         }
+    }
 
-    fun <A, B> Stream<A>.zipAll(
-        that: Stream<B>
-    ): Stream<Pair<Option<A>, Option<B>>> =
-        unfold(this to that) { (a, b) ->
-            when (a) {
-                is Empty -> {
-                    when (b) {
-                        is Empty -> None
-                        is Cons -> Some((None to Some(b.head())) to (empty<A>() to b.tail()))
-                    }
-                }
-                is Cons -> {
-                    when (b) {
-                        is Empty -> Some((Some(a.head()) to None) to (a.tail() to empty()))
-                        is Cons -> Some((Some(a.head()) to Some(b.head())) to (a.tail() to b.tail()))
-                    }
-                }
-            }
-        }
+class Exercise13 : WordSpec({
 
     "Stream.map" should {
         "apply a function to each evaluated element in a stream" {
@@ -81,17 +81,17 @@ class Exercise13 : WordSpec({
     "Stream.take(n)" should {
         "return the first n elements of a stream" {
             val s = Stream.of(1, 2, 3, 4, 5)
-            s.take(3).toList() shouldBe List.of(1, 2, 3)
+            s.take2(3).toList() shouldBe List.of(1, 2, 3)
         }
 
         "return all the elements if the stream is exhausted" {
             val s = Stream.of(1, 2, 3)
-            s.take(5).toList() shouldBe List.of(1, 2, 3)
+            s.take2(5).toList() shouldBe List.of(1, 2, 3)
         }
 
         "return an empty stream if the stream is empty" {
             val s = empty<Int>()
-            s.take(3).toList() shouldBe Nil
+            s.take2(3).toList() shouldBe Nil
         }
     }
 

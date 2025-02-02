@@ -15,10 +15,10 @@ class Exercise7 : WordSpec({
         foldRight({ empty() }, { a, b -> if (f(a)) cons({ a }, b) else b() })
 
     fun <A> Stream<A>.append(sa: () -> Stream<A>): Stream<A> =
-        foldRight(sa, { a, b -> cons({a}, sa) })
+        foldRight(sa) { a, b -> cons({ a }, b) }
 
     fun <A, B> Stream<A>.flatMap(f: (A) -> Stream<B>): Stream<B> =
-        TODO()
+        foldRight({ empty() }) { a, b -> f(a).append { b() } }
 
     "Stream.map" should {
         "apply a function to each evaluated element in a stream" {
