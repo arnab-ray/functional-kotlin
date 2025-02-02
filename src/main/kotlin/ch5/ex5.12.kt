@@ -8,7 +8,7 @@ import io.kotlintest.specs.WordSpec
 class Exercise12 : WordSpec({
 
     fun fibs(): Stream<Int> =
-        unfold((0 to 1)) { (a, b) -> Some(a to (b to a + b)) }
+        unfold(0 to 1) { (a, b) -> Some(a to (b to a + b)) }
 
     fun from(n: Int): Stream<Int> =
         unfold(n) { a -> Some(a to a + 1) }
