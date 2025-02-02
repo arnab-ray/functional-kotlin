@@ -1,5 +1,9 @@
 package ch5
 
+import ch4.None
+import ch4.Option
+import ch4.Some
+
 sealed class Stream<out A> {
 
     companion object {
@@ -31,3 +35,9 @@ data class Cons<out A>(
 ) : Stream<A>()
 
 data object Empty : Stream<Nothing>()
+
+fun <A> Stream<A>.headOption(): Option<A> =
+    when (this) {
+        is Empty -> None
+        is Cons -> Some(head())
+    }
