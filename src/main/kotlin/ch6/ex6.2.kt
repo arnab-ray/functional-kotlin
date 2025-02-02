@@ -3,12 +3,12 @@ package ch6
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 
-class Exercise2 : WordSpec({
+fun double(rng: RNG): Pair<Double, RNG> {
+    val (i, rng2) = nonNegativeInt(rng)
+    return (i / (Int.MAX_VALUE.toDouble() + 1)) to rng2
+}
 
-    fun double(rng: RNG): Pair<Double, RNG> {
-        val (i, rng2) = nonNegativeInt(rng)
-        return (i / (Int.MAX_VALUE.toDouble() + 1)) to rng2
-    }
+class Exercise2 : WordSpec({
 
     "double" should {
 
