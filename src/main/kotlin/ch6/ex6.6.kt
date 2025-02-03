@@ -3,18 +3,18 @@ package ch6
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 
-class Exercise6 : WordSpec({
+fun <A, B, C> map2(
+    ra: Rand<A>,
+    rb: Rand<B>,
+    f: (A, B) -> C
+): Rand<C> =
+    { rng ->
+        val (a, rng2) = ra(rng)
+        val (b, rng3) = rb(rng2)
+        f(a, b) to rng3
+    }
 
-    fun <A, B, C> map2(
-        ra: Rand<A>,
-        rb: Rand<B>,
-        f: (A, B) -> C
-    ): Rand<C> =
-        { rng ->
-            val (a, rng2) = ra(rng)
-            val (b, rng3) = rb(rng2)
-            f(a, b) to rng3
-        }
+class Exercise6 : WordSpec({
 
     "map2" should {
         "combine the results of two actions" {
