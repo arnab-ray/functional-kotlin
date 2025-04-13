@@ -42,3 +42,7 @@ object Pars {
             es.submit(Callable<A> { a()(es).get() })
         }
 }
+
+fun <A> List<A>.splitAt(idx: Int): Pair<List<A>, List<A>> = // <1>
+    this.subList(0, idx) to
+            this.subList(idx, this.size)
