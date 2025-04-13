@@ -1,6 +1,5 @@
 package ch7
 
-import ch7.Pars.UnitFuture
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
